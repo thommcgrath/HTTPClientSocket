@@ -164,10 +164,9 @@ End
 
 #tag Events HTTPClientSocket1
 	#tag Event
-		Sub ContentReceived(URL As String, HTTPStatus As Integer, Content As String, Headers As Dictionary)
+		Sub ContentReceived(URL As String, HTTPStatus As Integer, Content As String)
 		  #Pragma Unused URL
 		  #Pragma Unused HTTPStatus
-		  #Pragma Unused Headers
 		  
 		  Self.TextArea1.Text = Content
 		End Sub

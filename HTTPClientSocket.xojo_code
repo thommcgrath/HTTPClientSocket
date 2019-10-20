@@ -6,7 +6,7 @@ Protected Class HTTPClientSocket
 		  If FormData <> Nil Then
 		    #if XojoVersion >= 2019.02
 		      For Each Entry As DictionaryEntry In FormData
-		        Parts.Append(EncodeURLComponent(Entry.Key.StringValue) + "=" + EncodeURLComponent(Entry.Value.StringValue))
+		        Parts.AddRow(EncodeURLComponent(Entry.Key.StringValue) + "=" + EncodeURLComponent(Entry.Value.StringValue))
 		      Next
 		    #else
 		      Dim Keys() As Variant = FormData.Keys
@@ -100,12 +100,12 @@ Protected Class HTTPClientSocket
 		    Dim ByteCount As Int64 = Self.mSocket.GetInfoContentLengthDownload
 		    RaiseEvent ReceivingProgressed(ByteCount, ByteCount, "")
 		    If Self.mSaveToFile <> Nil Then
-		      RaiseEvent FileReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"), Self.mSaveToFile, Dict.Value("Headers"))
+		      RaiseEvent FileReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"), Self.mSaveToFile)
 		    Else
-		      RaiseEvent ContentReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"), Dict.Value("Content"), Dict.Value("Headers"))
+		      RaiseEvent ContentReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"), Dict.Value("Content"))
 		    End If
 		  Case "HeadersReceived"
-		    RaiseEvent HeadersReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"), Dict.Value("Headers"))
+		    RaiseEvent HeadersReceived(Dict.Value("URL"), Dict.Value("HTTPStatus"))
 		  Case "AuthenticationRequested"
 		    Dim Username, Password As String
 		    Dim Handled As Boolean = AuthenticationRequested(Dict.Value("Realm"), Username, Password)
@@ -121,7 +121,7 @@ Protected Class HTTPClientSocket
 		      #endif
 		    End If
 		  Case "Error"
-		    RaiseEvent Error(Dict.Value("URL"), Dict.Value("Err"))
+		    RaiseEvent Error(Dict.Value("Err"))
 		  Case "ReceivingProgressed"
 		    RaiseEvent ReceivingProgressed(Dict.Value("ReceivedBytes"), Dict.Value("TotalBytes"), "")
 		  Case "SendingProgressed"
@@ -428,7 +428,7 @@ Protected Class HTTPClientSocket
 		  Dim Headers() As String
 		  #if XojoVersion >= 2019.02
 		    For Each Entry As DictionaryEntry In Self.mRequestHeaders
-		      Headers.Append(Entry.Key.StringValue + ": " + Entry.Value.StringValue)
+		      Headers.AddRow(Entry.Key.StringValue + ": " + Entry.Value.StringValue)
 		    Next
 		  #else
 		    Dim Keys() As Variant = Self.mRequestHeaders.Keys
@@ -478,19 +478,19 @@ Protected Class HTTPClientSocket
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event ContentReceived(URL As String, HTTPStatus As Integer, Content As String, Headers As Dictionary)
+		Event ContentReceived(URL As String, HTTPStatus As Integer, Content As String)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Error(URL As String, E As RuntimeException)
+		Event Error(E As RuntimeException)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event FileReceived(URL As String, HTTPStatus As Integer, File As FolderItem, Headers As Dictionary)
+		Event FileReceived(URL As String, HTTPStatus As Integer, File As FolderItem)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event HeadersReceived(URL As String, HTTPStatus As String, Headers As Dictionary)
+		Event HeadersReceived(URL As String, HTTPStatus As Integer)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
