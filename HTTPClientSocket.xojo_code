@@ -400,6 +400,25 @@ Protected Class HTTPClientSocket
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ResponseHeaders() As Pair()
+		  #if XojoVersion >= 2019.02
+		    Var Pairs() As Pair
+		    For Each Entry As DictionaryEntry In Self.mResponseHeaders
+		      Pairs.AddRow(Entry.Key : Entry.Value)
+		    Next
+		    Return Pairs
+		  #else
+		    Dim Pairs() As Pair
+		    Dim Keys() As Variant = Self.mResponseHeaders.Keys
+		    For Each Key As Variant In Keys
+		      Pairs.AddRow(Key : Self.mResponseHeaders.Value(Key))
+		    Next
+		    Return Pairs
+		  #endif
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub ScheduleUpdateDictionary(Dict As Dictionary)
 		  Dim CurrentThread As Thread = App.CurrentThread
