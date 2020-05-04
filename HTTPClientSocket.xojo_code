@@ -2,20 +2,24 @@
 Protected Class HTTPClientSocket
 	#tag Method, Flags = &h0
 		Shared Function BuildQueryString(FormData As Dictionary) As String
-		  Dim Parts() As String
-		  If FormData <> Nil Then
-		    #if XojoVersion >= 2019.02
+		  #if XojoVersion >= 2019.02
+		    Var Parts() As String
+		    If (FormData Is Nil) = False Then
 		      For Each Entry As DictionaryEntry In FormData
 		        Parts.AddRow(EncodeURLComponent(Entry.Key.StringValue) + "=" + EncodeURLComponent(Entry.Value.StringValue))
 		      Next
-		    #else
+		    End If
+		    Return String.FromArray(Parts, "&")
+		  #else
+		    Dim Parts() As String
+		    If (FormData Is Nil) = False Then
 		      Dim Keys() As Variant = FormData.Keys
 		      For Each Key As Variant In Keys
 		        Parts.Append(EncodeURLComponent(Key.StringValue) + "=" + EncodeURLComponent(FormData.Value(Key).StringValue))
 		      Next
-		    #endif
-		  End If
-		  Return Join(Parts, "&")
+		    End If
+		    Return Join(Parts, "&")
+		  #endif
 		End Function
 	#tag EndMethod
 

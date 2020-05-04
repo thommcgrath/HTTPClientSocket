@@ -3,7 +3,11 @@ Protected Class App
 Inherits Application
 	#tag Event
 		Sub Open()
-		  Self.AutoQuit = True
+		  #if XojoVersion >= 2019.02
+		    Self.AllowAutoQuit = True
+		  #else
+		    Self.AutoQuit = True
+		  #endif
 		End Sub
 	#tag EndEvent
 

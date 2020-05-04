@@ -168,14 +168,22 @@ End
 		  #Pragma Unused URL
 		  #Pragma Unused HTTPStatus
 		  
-		  Self.TextArea1.Text = Content
+		  #if XojoVersion >= 2019.02
+		    Self.TextArea1.Value = Content
+		  #else
+		    Self.TextArea1.Text = Content
+		  #endif
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Self.HTTPClientSocket1.Send("GET", Self.TextField1.Text)
+		  #if XojoVersion >= 2019.02
+		    Self.HTTPClientSocket1.Send("GET", Self.TextField1.Value)
+		  #else
+		    Self.HTTPClientSocket1.Send("GET", Self.TextField1.Text)
+		  #endif
 		End Sub
 	#tag EndEvent
 #tag EndEvents
